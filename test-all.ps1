@@ -192,6 +192,16 @@ try {
     Show-Fail "Secure-register fallo: $_"
 }
 
+Show-Step 13 'SECURE-REGISTER FALLIDO (credenciales incorrectas)'
+Write-Host '    -> Debe fallar porque el usuario no es valido' -ForegroundColor Gray
+try {
+    $failBody = '{"auth":{"username":"hacker","password":"123"},"patient":{"nombre":"Intruso","email":"bad@test.com","telefono":"000-0000","fechaNacimiento":"2000-01-01"}}'
+    Invoke-RestMethod -Uri 'http://localhost:8080/api/gateway/secure-register' -Method Post -ContentType 'application/json' -Body $failBody | Out-Null
+    Show-Fail 'Debio rechazar el registro pero lo acepto'
+} catch {
+    Show-OK 'REGISTRO RECHAZADO CORRECTAMENTE (Error esperado de autenticacion)'
+}
+
 # ============================================================
 # RESUMEN
 # ============================================================
